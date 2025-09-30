@@ -1,5 +1,5 @@
 #pragma once
-#pragma comment(lib,"ws2_32.lib")
+#pragma comment(lib,"ws2_32.lib")ijij
 
 #include <Winsock2.h>
 #include <stdio.h>
@@ -17,4 +17,5 @@ SOCKET init(const char *_ip, short _port);
 void recving(int sock, std::string &out);
 
 void sending(int sock, std::string &in);
+
 

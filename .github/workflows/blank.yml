@@ -1,0 +1,35 @@
+name: Burst 100 commits
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  burst:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Git
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Make 100 commits quickly
+        run: |
+          FILE="heartbeat.txt"
+          touch "$FILE"
+          for i in $(seq 1 100); do
+            echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') #$i" >> "$FILE"
+            git add "$FILE"
+            git commit -m "chore: heartbeat #$i"
+          done
+
+      - name: Push
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git remote set-url origin "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git"
+          git push origin "HEAD:${BRANCH}"
